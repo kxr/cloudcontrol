@@ -6,11 +6,11 @@ Cloud control is a simple single page dashboard type application to control the 
 
 These are the main components:
 
-* **Flask based backend:** The backend is written in flask with three simple views /, /instances and /envstatus. / is the main view i.e. the main dashboard. The other two views are used by bootstrap to update the information on the page.
+* **Flask based backend:** The backend is written in flask with three simple views /, /instances and /envstatus. / is the main view i.e. the main dashboard. The other two views are used by bootstrap to update the information on the page. See cloudcontrol.py for more details.
 
-* **Bootstrap based frontend:** The front end is simple bootstrap with navigation bar on top, a status window, and the instances table that shows live status of the instances.
+* **Bootstrap based frontend:** The front end is simple bootstrap with navigation bar on top, a status window, and the instances table that shows live status of the instances. See templates/index.html for more details.
 
-* **Python based Start/Stop script:** A basic script that is executed by flask when the start/stop operation is initiated from the dashboard.
+* **Python based Start/Stop script:** A basic script that is executed by flask when the start/stop operation is initiated from the dashboard. See env_start_stop.py for more details.
 
 ### Requirements
 
@@ -30,6 +30,7 @@ I've tested this application on both python 2.7.5 and 3.4.5 running on Linux.
 
 * Browse to: ```http://hostname-or-ip:5000```
 
+If you want to deploy this application in apache, a sample configuration is provided in file: cloudcontrol.conf.apache_example. When deploying with apache, please make sure that the apache/wsgi user has permission to create a new file in root directory of the application and write to envstatus.txt file.
 
 ## Background
 
