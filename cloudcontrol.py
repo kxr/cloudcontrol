@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, json, request, Response
 from flask_caching import Cache
 from subprocess import Popen
 import os
@@ -100,7 +100,7 @@ def instances():
 		ipvip = i.private_ip_address
 		ivols = vols[ iid ]
 		instances.append ( { 'name': iname, 'id': iid, 'az': iaz, 'env': ienv, 'type': itype, 'vols': ivols, 'privip': ipvip, 'state': istate } )
-	return jsonify(instances)
+	return Response( json.dumps(instances), mimetype='application/json' )
 
 #
 # The Environment Status view
@@ -121,4 +121,4 @@ def envstatus():
 	return(content)
 
 if __name__ == "__main__":
-	app.run()
+	app.run( host="0.0.0.0", debug=True)
