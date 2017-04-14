@@ -1,0 +1,17 @@
+<VirtualHost *:80>
+        ServerName cloudcontrol.etqm.global
+        Alias /static /opt/cloudcontrol/static
+
+        WSGIDaemonProcess cloudcontrol user=apache group=apache threads=15
+        WSGIScriptAlias / /opt/cloudcontrol/cloudcontrol.wsgi
+
+        <Directory "/opt/cloudcontrol">
+                #Options Indexes FollowSymLinks
+                WSGIProcessGroup cloudcontrol
+                WSGIScriptReloading On
+                WSGIApplicationGroup %{GLOBAL}
+                Require all granted
+        </Directory>
+
+</VirtualHost>
+
