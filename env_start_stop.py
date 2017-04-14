@@ -32,20 +32,26 @@ if len( sys.argv ) == 3:
 				with open( config.ENV_STATUS_OUT, 'a' ) as envstatus:
 					envstatus.writelines( '{:%Y-%m-%d %H:%M:%S} <b>Startup Stage {}:</b> {} ... '.format( datetime.now(), stage_count, str(stage) ) )
 				filter = [ { 'Name': 'tag:Name', 'Values': stage } ]
-				filtered_instances=ec2.instances.filter(Filters=filter)
-				filtered_instances.start()
-				# Wait for the instances to start
-				all_running = False
-				while not all_running:
-					time.sleep(5)
-					all_running = True
-					for i in filtered_instances:
-						if i.state['Name'] != 'running':
-							all_running = False
-				with open( config.ENV_STATUS_OUT, 'a' ) as envstatus:
-					envstatus.writelines( '<b>Startup Successfull ... Waiting for Services.</b>\n' )
-				time.sleep(config.INTER_DEPENDENCY_START_DELAY)
-			with open( config.ENV_STATUS_OUT, 'w' ) as envstatus:
+				filtered_instances = ec2.instances.filter(Filters=filter)
+				filtered_count = len( list( filtered_instances ) )
+				if filtered_count > 0 :
+					filtered_instances.start()
+					# Wait for the instances to start
+					all_running = False
+					while not all_running:
+						time.sleep(5)
+						all_running = True
+						for i in filtered_instances:
+							if i.state['Name'] != 'running':
+								all_running = False
+					with open( config.ENV_STATUS_OUT, 'a' ) as envstatus:
+						envstatus.writelines( '<span class="text-success"><b> Started {} instances.</b></span>\n'.format( filtered_count ) )
+					time.sleep(config.INTER_DEPENDENCY_START_DELAY)
+				else:
+					with open( config.ENV_STATUS_OUT, 'a' ) as envstatus:
+						envstatus.writelines( '<span class="text-danger"><b>No instances found.</b></span>\n'.format( filtered_count ) )
+					
+			with open( config.ENV_STATUS_OUT, 'a' ) as envstatus:
 				envstatus.writelines( '{:%Y-%m-%d %H:%M:%S} <b>{} Environment Started</b>'.format( datetime.now(), env ) )
 
 			# Remove Lock
@@ -75,19 +81,24 @@ if len( sys.argv ) == 3:
 					envstatus.writelines( '{:%Y-%m-%d %H:%M:%S} <b>Shutting Down Stage {}:</b> {} ... '.format( datetime.now(), stage_count, str(stage) ) )
 				filter = [ { 'Name': 'tag:Name', 'Values': stage } ]
 				filtered_instances=ec2.instances.filter(Filters=filter)
-				filtered_instances.stop( Force=False )
-				# Wait for the instances to stop
-				any_running = True
-				while any_running:
-					time.sleep(5)
-					any_running = False
-					for i in filtered_instances:
-						if i.state['Name'] != 'stopped':
-							any_running = True
-				with open( config.ENV_STATUS_OUT, 'a' ) as envstatus:
-					envstatus.writelines( '<b>Shutdown Successfull</b>\n' )
-
-			with open( config.ENV_STATUS_OUT, 'w' ) as envstatus:
+				filtered_count = len( list( filtered_instances ) )
+				if filtered_count > 0 :
+					filtered_instances.stop( Force=False )
+					# Wait for the instances to stop
+					any_running = True
+					while any_running:
+						time.sleep(5)
+						any_running = False
+						for i in filtered_instances:
+							if i.state['Name'] != 'stopped':
+								any_running = True
+					with open( config.ENV_STATUS_OUT, 'a' ) as envstatus:
+						envstatus.writelines( '<span class="text-success"><b>Shutdown {} instances.</b></span>\n'.format( filtered_count ) )
+				else:
+					with open( config.ENV_STATUS_OUT, 'a' ) as envstatus:
+						envstatus.writelines( '<span class="text-danger"><b>No instances found.</b></span>\n'.format( filtered_count ) )
+				
+			with open( config.ENV_STATUS_OUT, 'a' ) as envstatus:
 				envstatus.writelines( '{:%Y-%m-%d %H:%M:%S} <b>{} Environment Stopped</b>'.format( datetime.now(), env ) )
 					
 			# Remove Lock

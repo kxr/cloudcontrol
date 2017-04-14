@@ -1,1 +1,3 @@
-2017-04-14 15:51:07 <b>APP01 Environment Started</b>
+2017-04-14 22:42:59 <b>Initiating test Environment Shutdown</b>
+2017-04-14 22:42:59 <b>Shutting Down Stage 1:</b> ['dev-mobile-01'] ... <span class="text-success"><b>Shutdown 1 instances.</b></span>
+2017-04-14 22:43:22 <b>test Environment Stopped</b>
