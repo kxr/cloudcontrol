@@ -24,7 +24,7 @@ I've tested this application on both python 2.7.5 and 3.4.5 running on Linux.
 
 * Clone: ```git clone http://github.com/kxr/cloudcontrol.git ```
 
-* Install dependecies: ```pip install -r requirements.txt```
+* Install dependencies: ```pip install -r requirements.txt```
 
 * Set the configuration variables in:  ```config.py```
 
