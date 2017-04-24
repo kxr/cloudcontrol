@@ -28,6 +28,7 @@ def index():
 	
 	# If some thing was posted,
 	if request.method == 'POST':
+
 		# First of all make sure there are no locks
 		# Add the alert in the render_data if a lock is there
 		if os.path.isfile( config.ENV_START_LOCK ):
@@ -35,10 +36,25 @@ def index():
 		elif os.path.isfile( config.ENV_STOP_LOCK ):
 			render_data['alert'] = 'Please wait, the environment is currently shutting down'
 		else:
+			if 'startins' in request.form:
+				ec2_res = boto3.Session(
+					aws_access_key_id = config.AWS_ACCESS_KEY_ID,
+					aws_secret_access_key = config.AWS_SECRET_ACCESS_KEY,
+					region_name = config.AWS_REGION
+				).resource( 'ec2' ).Instance(id=request.form['startins']).start()
+				render_data['info'] = 'Starting Instance: ' + request.form['insname'] + '(' + request.form['startins'] + ')'
+			elif 'stopins' in request.form:
+				ec2_res = boto3.Session(
+					aws_access_key_id = config.AWS_ACCESS_KEY_ID,
+					aws_secret_access_key = config.AWS_SECRET_ACCESS_KEY,
+					region_name = config.AWS_REGION
+				).resource( 'ec2' ).Instance(id=request.form['stopins']).stop(Force=False)
+				render_data['info'] = 'Stoping Instance: ' + request.form['insname'] + '(' + request.form['stopins'] + ')'
+
 			# If startenv was posted,
 			# Call the script with start argument
 			# And pass the success notification in render_data
-			if 'startenv' in request.form and 'env' in request.form:
+			elif 'startenv' in request.form and 'env' in request.form:
 				Popen( [ 'nohup', config.ENV_START_STOP, 'start', request.form['env'] ],
 					preexec_fn=os.setpgrp )
 				render_data['info'] = 'Starting the environment: ' + request.form['env']

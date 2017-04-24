@@ -16,6 +16,7 @@
 	<script src="/static/js/bootstrap-table-1.11.1.min.js"></script>
 	<script src="/static/js/bootstrap-table-export.js"></script>
 	<script src="/static/js/bootstrap-table-sticky-header.js"></script>
+	<script src="/static/js/bootstrap-confirmation-2.4.0.min.js"></script>
 </head>
 <body>
 
@@ -142,7 +143,7 @@
 	</div>
 </div>
 
-<div class="container table-responsive">
+<div style='overflow-x: visible !important;' class="container table-responsive">
 
 	<table	id="instances"
 		class="table table-hover"
@@ -153,8 +154,7 @@
 		data-row-style="rowStyle"
 		data-search="true"
 		data-sort-name="state"
-		data-sort-order="asc"
-		data-url="/instances">
+		data-sort-order="asc">
 		<thead>
 			<tr>
 				<th data-field="name" data-sortable="false">
@@ -181,6 +181,9 @@
 				<th data-field="state" data-sortable="true" data-sorter="stateSorter" data-formatter="stateFormatter">
 					State
 				</th>
+				<th data-formatter="actionsFormatter">
+					Action
+				</th>
 			</tr>
 		</thead>
 	</table>
@@ -199,6 +202,7 @@
 					'dataType': 'json',
 					'success': function (data) {
 						$('#instances').bootstrapTable('load', data);
+						$('[data-toggle=confirmation]').confirmation({ rootSelector: '[data-toggle=confirmation]' });
 					}
 				});
 			})();
@@ -254,6 +258,26 @@
 			$(this).remove();
 		});
 	}, 3000);
+
+	// Actions Formater
+	function actionsFormatter(value, row) {
+		if (row.state == 'running')
+			return "<form method='post'>\
+				<input type='hidden' name='insname' value='"+ row.name +"' />\
+				<button		type='submit' name='stopins' value='"+ row.id +"'\
+						class='btn btn-xs btn-danger glyphicon glyphicon-stop'\
+						data-toggle='confirmation' data-popout='true' data-title='Sure?' data-placement='right'>\
+				</button>\
+				</form>";
+		else if (row.state == 'stopped')
+			return "<form method='post'>\
+				<input type='hidden' name='insname' value='"+ row.name +"' />\
+				<button		type='submit' name='startins' value='"+ row.id +"'\
+						class='btn btn-xs btn-success glyphicon glyphicon-play'\
+						data-toggle='confirmation' data-popout='true' data-title='Sure?' data-placement='right'>\
+				</button>\
+				</form>";
+	}
 </script>
 
 </body>
