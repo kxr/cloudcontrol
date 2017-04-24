@@ -129,7 +129,7 @@ def instances():
 @app.route("/envstatus", methods=['GET'])
 def envstatus():
 	content = ''
-	with open(config.ENV_STATUS_OUT, "r+") as f:
+	with open(config.ENV_STATUS_OUT, "r") as f:
 		#for line in f:
 		#	content += line
 		#	content += ('<br />')
