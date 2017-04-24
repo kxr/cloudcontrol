@@ -212,6 +212,9 @@
 			// Run every few seconds, indefinitely
 			setTimeout(updateinstancestates, {{ data['data_refresh'] * 1000 }});
 		})();
+
+		//
+		$('[data-toggle=confirmation]').confirmation({ rootSelector: '[data-toggle=confirmation]' });
 	});
 
 
